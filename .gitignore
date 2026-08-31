@@ -1,0 +1,10 @@
+*.out
+*.exe
+*.app
+*.txt
+build/
+.cmake/
+.vscode/
+*.o
+*.obj
+.DS_Store
