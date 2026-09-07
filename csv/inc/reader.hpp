@@ -12,7 +12,7 @@ namespace csv {
 
 template <typename Delimiter = delimiter<','>,
           typename QuoteChar = quoteCharacter<'"'>,
-          typename TrimPolicy = trim_none>
+          typename TrimPolicy = trimNone>
 class Reader {
  public:
   Reader() : input(nullptr) {}

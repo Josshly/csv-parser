@@ -5,7 +5,7 @@
 namespace csv {
 
 template <bool b>
-struct first_row_is_header {
+struct firstRowIsHeader {
   static constexpr bool value = b;
 };
 
@@ -19,11 +19,11 @@ struct quoteCharacter {
   static constexpr char value = ch;
 };
 
-struct trim_none {
+struct trimNone {
   static void trim(std::string&) noexcept {}
 };
 
-struct trim_whitespace {
+struct trimWhitespace {
   static void trim(std::string& s) {
     auto start = s.find_first_not_of(" \t\r\n");
     if (start == std::string::npos) {
