@@ -2,6 +2,8 @@
 #define CSV_INC_PARAMETERS_HPP
 #include <string>
 
+namespace csv {
+
 template <bool b>
 struct first_row_is_header {
   static constexpr bool value = b;
@@ -32,5 +34,7 @@ struct trim_whitespace {
     s = s.substr(start, end - start + 1);
   }
 };
+
+}  // namespace csv
 
 #endif
