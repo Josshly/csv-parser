@@ -184,7 +184,8 @@ class Table : public detail::TableCore {
 template <>
 class Table<firstRowIsHeader<false>> : public detail::TableCore {
  public:
-  using TableCore::TableCore;
+  Table() = default;
+  explicit Table(rowArray values) : TableCore(std::move(values)) {}
 };
 
 template <typename HeaderPolicy = firstRowIsHeader<true>,
