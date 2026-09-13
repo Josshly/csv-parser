@@ -197,7 +197,7 @@ Table<HeaderPolicy> readCSV(const std::string& filename) {
   if (!input) {
     throw std::runtime_error("csv::readCSV: cannot open file: " + filename);
   }
-  Reader<Delimiter, QuoteChar, TrimPolicy> reader(&input);
+  Reader<Delimiter, QuoteChar, TrimPolicy> reader(input);
   std::vector<std::vector<std::string>> rows;
   reader.parse(rows);
   return Table<HeaderPolicy>(std::move(rows));
