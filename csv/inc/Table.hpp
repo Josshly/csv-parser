@@ -16,7 +16,11 @@ namespace csv {
 template <typename HeaderPolicy = firstRowIsHeader<true>>
 class Table : public detail::TableCore {
  public:
-  using TableCore::TableCore;
+  using TableCore::at;
+  using TableCore::getColumn;
+  using TableCore::setColumn;
+
+  Table() = default;
 
   explicit Table(rowArray values) {
     if (values.empty()) {
@@ -68,7 +72,7 @@ class Table : public detail::TableCore {
 
   void setColumn(const std::string& name, std::vector<std::string> values) {
     if (rows.size() != values.size()) {
-      throw std::runtime_error("csv::TableCore::setColumn: values size (" +
+      throw std::runtime_error("csv::Table::setColumn: values size (" +
                                std::to_string(values.size()) +
                                ") does not match row count (" +
                                std::to_string(rows.size()) + ")");
@@ -156,16 +160,27 @@ class Table : public detail::TableCore {
         matched.push_back(row);
       }
     }
-    return Table(header, matched);
+    return Table(header, std::move(matched));
   }
 
  protected:
-  void validateRow(const std::vector<std::string>& row) const override {
+  void validateRow(const std::vector<std::string>& row,
+                   const std::string& method_name) const override {
     if (row.size() != header.size()) {
-      throw std::runtime_error("csv::Table::addRow: row size (" +
+      throw std::runtime_error("csv::Table::" + method_name + ": row size (" +
                                std::to_string(row.size()) +
                                ") does not match header size (" +
                                std::to_string(header.size()) + ")");
+    }
+  }
+
+  void validateColumnIndex(std::size_t i,
+                           const std::string& method_name) const override {
+    if (i >= header.size()) {
+      throw std::runtime_error("csv::TableCore::" + method_name +
+                               ": column index " + std::to_string(i) +
+                               " out of range (column count: " +
+                               std::to_string(rows.front().size()) + ")");
     }
   }
 
