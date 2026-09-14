@@ -4,12 +4,35 @@ namespace csv {
 
 namespace detail {
 
-void TableCore::validateRow(const std::vector<std::string>& row) const {
+void TableCore::validateRow(const std::vector<std::string>& row,
+                            const std::string& method_name) const {
   if (!rows.empty() && row.size() != rows.front().size()) {
-    throw std::runtime_error("csv::TableCore::addRow: row size (" +
+    throw std::runtime_error("csv::TableCore::" + method_name + ": row size (" +
                              std::to_string(row.size()) +
                              ") does not match existing column count (" +
                              std::to_string(rows.front().size()) + ")");
+  }
+}
+
+void TableCore::validateColumnIndex(std::size_t i,
+                                    const std::string& method_name) const {
+  if (!rows.empty() && i >= rows.front().size()) {
+    throw std::runtime_error("csv::TableCore::" + method_name +
+                             ": column index " + std::to_string(i) +
+                             " out of range (column count: " +
+                             std::to_string(rows.front().size()) + ")");
+  }
+}
+
+TableCore::TableCore(rowArray values) : rows(std::move(values)) {
+  if (rows.empty()) return;
+  const std::size_t width = rows.front().size();
+  for (const auto& row : rows) {
+    if (row.size() != width) {
+      throw std::runtime_error(
+          "csv::TableCore::TableCore: inconsistent row size (" +
+          std::to_string(row.size()) + " vs " + std::to_string(width) + ")");
+    }
   }
 }
 
@@ -35,12 +58,7 @@ void TableCore::setColumn(std::size_t i, std::vector<std::string> values) {
                              ") does not match row count (" +
                              std::to_string(rows.size()) + ")");
   }
-  if (!rows.empty() && i >= rows.front().size()) {
-    throw std::runtime_error(
-        "csv::TableCore::setColumn: column index " + std::to_string(i) +
-        " out of range (column count: " + std::to_string(rows.front().size()) +
-        ")");
-  }
+  validateColumnIndex(i, "setColumn");
   for (std::size_t j = 0; j < rows.size(); ++j) {
     rows[j][i] = std::move(values[j]);
   }
@@ -59,7 +77,7 @@ void TableCore::addColumn(std::vector<std::string> column) {
 }
 
 void TableCore::addRow(std::vector<std::string> row) {
-  validateRow(row);
+  validateRow(row, "addRow");
   rows.push_back(std::move(row));
 }
 

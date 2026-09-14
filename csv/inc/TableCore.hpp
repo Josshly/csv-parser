@@ -15,7 +15,7 @@ class TableCore {
 
  protected:
   TableCore() = default;
-  explicit TableCore(rowArray values) : rows(std::move(values)) {}
+  explicit TableCore(rowArray values);
 
  public:
   virtual ~TableCore() = default;
@@ -72,7 +72,10 @@ class TableCore {
   }
 
  protected:
-  virtual void validateRow(const std::vector<std::string>& row) const;
+  virtual void validateRow(const std::vector<std::string>& row,
+                           const std::string& method_name) const;
+  virtual void validateColumnIndex(std::size_t i,
+                                   const std::string& method_name) const;
 
  protected:
   rowArray rows;
